@@ -1,0 +1,51 @@
+/**
+House Paint II
+Input : costs matrix (NxK) costs[i][j] is the cost of painting house i with paint j
+Output : Minimum Cost to paint N houses
+**/
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int problem19(vector<vector<int> >& costs) {
+    int N = costs.size();
+    if (N == 0) return 0;
+    int K = costs[0].size();
+    int preMin = 0, preSecondMin = 0, preMinIndex = -1;
+    for (int i=0;i<N;i++) {
+        int currentMin = INT_MAX, currentSecondMin = INT_MAX, currentMinIndex = 0;
+        for (int j=0;j<K;j++) {
+            if (preMinIndex == j) {
+                costs[i][j] += preSecondMin;
+            } else {
+                costs[i][j] += preMin;
+            }
+            if (currentMin > costs[i][j]) {
+                currentSecondMin = currentMin;
+                currentMin = costs[i][j];
+                currentMinIndex = j;
+            } else if (currentSecondMin > costs[i][j]) {
+                currentSecondMin = costs[i][j];
+            }
+        }
+        preMin = currentMin;
+        preSecondMin = currentSecondMin;
+        preMinIndex = currentMinIndex;
+    }
+    int result = INT_MAX;
+    for (int j=0;j<K;j++) {
+        if (result > costs[K-1][j]) {
+            result = costs[K-1][j];
+        }
+    }
+    return result;
+    
+}
+
+int main() {
+    vector<vector<int> > costs = {{1,2,4},{3,2,1},{2,4,5}};
+    cout << "result: " << problem19(costs) << endl;
+    return 0;
+}
